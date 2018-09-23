@@ -1,7 +1,8 @@
 package com.processFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 
-@WebServlet("/process")
+
 @MultipartConfig(fileSizeThreshold=1024*1024*10, 	// 10 MB 
 maxFileSize=1024*1024*50,      	// 50 MB
 maxRequestSize=1024*1024*100)  
@@ -41,10 +42,11 @@ public class ProcessFile extends HttpServlet {
 	            part.write(uploadFilePath + File.separator + fileName);
 	        }
 	        System.out.println(fileName + " File uploaded successfully!");
-	        String filePath=fileSaveDir.getAbsolutePath()+File.separator+fileName ;
+	        String filePath=fileSaveDir.getCanonicalPath()+File.separator+fileName ;
 	        System.out.println(filePath);
 	        request.setAttribute("filePath",filePath );
-	        getServletContext().getRequestDispatcher("formatFile").forward(request, response);
+	        RequestDispatcher rd=request.getRequestDispatcher("formatFile");
+	        rd.forward(request, response);
 	    }
 	 
 	    /**
